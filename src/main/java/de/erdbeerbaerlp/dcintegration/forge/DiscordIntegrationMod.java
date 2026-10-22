@@ -84,6 +84,7 @@ public class DiscordIntegrationMod {
     public DiscordIntegrationMod() {
         LOGGER.info("Version is " + VERSION);
         bstats = new Metrics(9765);
+        MinecraftForge.EVENT_BUS.addListener(this::serverStopping);
         ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> IExtensionPoint.DisplayTest.IGNORESERVERONLY, (a, b) -> true));
         try {
             //Create data directory if missing
@@ -469,7 +470,6 @@ public class DiscordIntegrationMod {
 
     }
 
-    @SubscribeEvent
     public void serverStopping(ServerStoppedEvent ev) {
         Metrics.MetricsBase.scheduler.shutdownNow();
         if (INSTANCE != null) {
